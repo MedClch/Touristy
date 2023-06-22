@@ -1,0 +1,47 @@
+{% extends "service/layout/layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block body %}
+{% if message %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Error!</strong> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endif %}
+<div class="text-center position-absolute top-50 start-50 translate-middle w-25 fw-light text-light">
+    <h1 class="h3 mb-4 fw-light">Create a touristy account</h1>
+    <form action="{% url 'register' %}" method="post" class="w-100 mx-auto">
+        {% csrf_token %}
+        <input type="username" name="username" class="form-control mb-3" placeholder="Username" minlength="5" required autofocus> 
+        <input type="password" name="password" id="password" class="form-control mb-3" placeholder="Password" minlength="8" required autofocus oninput="validateForm()">  
+        <input type="password" name="password_repeat" id="password_repeat" class="form-control mb-3" placeholder="Repeat password" minlength="8" required autofocus oninput="validateForm()">
+        <div id="pass_rep_warn" class="alert alert-light" role="alert" hidden="true">
+            Password and password confirmation do not match!
+        </div>
+        <button id="submit" class="btn btn-lg btn-secondary btn-block">Sign up</button>
+    </form>
+    <div class="mt-4">
+        <div class="d-flex justify-content-center links">
+            Already have an account?&nbsp;<a href="{% url 'login' %}" class="ml-2">Sign in</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function validateForm(){
+        var pass = document.getElementById("password").value;
+        var passrep =  document.getElementById("password_repeat").value;
+        if (pass != passrep) {
+            document.getElementById("pass_rep_warn").removeAttribute("hidden");
+            document.getElementById("submit").setAttribute("disabled", true);
+            return;
+        }
+        document.getElementById("pass_rep_warn").setAttribute("hidden", true);
+        document.getElementById("submit").removeAttribute("disabled");
+        return;
+    }
+</script>
+{% endblock %}

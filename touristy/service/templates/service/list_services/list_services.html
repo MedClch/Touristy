@@ -1,0 +1,53 @@
+{% extends "service/layout/layout.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block body %}
+    <main>
+    <section class="py-5 text-center container">
+      <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+          <h1 class="fw-light text-light">{{ page_title }}</h1><br>
+          {% if my_services %}
+          <a href="{% url 'add_service' %}"><button type="button" class="btn btn-secondary">Add a service</button></a>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  
+    <div class="album py-5 mx-5 bg-dark rounded">
+      <div class="container">
+        {% if msg %}
+          <div class="alert alert-warning" role="alert">
+            {{ msg }}
+          </div>
+        {% endif %}
+        {% if services %}
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for service in services %}
+              <div class="col">
+                <div class="card shadow-sm">
+                  <img src="{{ service.thumbnail }}" class="card-img-top img-thumbnail" alt="Thumbnail">
+                  <div class="card-body">
+                      <div>
+                        <p class="card-text">{{ service.title }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <a href="{% url 'service_info' service.pk %}"><button type="button" class="btn btn-sm btn-outline-secondary">View</button></a>
+                        {% if my_services %}
+                          <a href="{% url 'modify_service' service.pk %}"><button type="button" class="btn btn-sm btn-outline-secondary ms-1">Edit</button></a>
+                        {% endif %}
+                      </div>
+                      <small>{{ service.type | title }}</small>
+                    </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+{% endblock %}

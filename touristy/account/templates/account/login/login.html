@@ -1,0 +1,28 @@
+{% extends "service/layout/layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block body %}
+{% if message %}
+<div class="alert alert-warning" role="alert">
+    {{ message }}
+</div>
+{% endif %}
+<div class="text-center position-absolute top-50 start-50 translate-middle text-light">
+    <h1 class="h3 mb-4 fw-light">Touristy account login</h1>
+    <form action="{% url 'login' %}" method="post" class="w-75 mx-auto">
+        {% csrf_token %}
+        <input type="username" name="username" class="form-control mb-3" placeholder="Username" required autofocus> 
+        <input type="password" name="password" class="form-control mb-3" placeholder="Password" required autofocus>  
+        <button class="btn btn-lg btn-secondary btn-block">Sign in</button>
+    </form>
+    <div class="mt-4">
+        <div class="d-flex justify-content-center links">
+            Don't have an account?&nbsp;<a href="{% url 'register' %}" class="ml-2">Sign up</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

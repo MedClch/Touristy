@@ -1,0 +1,103 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'service/style/bootstrap.min.css' %}">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body class="bg-dark fw-light" {% block home_style %}{% endblock %}>
+    <header id="navbar" class="sticky-top">
+        <nav class="navbar navbar-expand-lg 
+        {% if is_home %}
+        navbar-light bg-transparent
+        {% else %}
+        navbar-dark bg-dark
+        {% endif %}">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="{% url 'home' %}">Touristy</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto me-auto mb-2 mb-lg-0">
+                  <li class="nav-item mx-2">
+                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+                  </li>
+                  <li class="nav-item  mx-2">
+                    <form id="coordinates" action="{% url 'nearby' %}" method="post" hidden>
+                      {% csrf_token %}
+                      <input type="hidden" name="longitude" id="longitude" value="">
+                      <input type="hidden" name="latitude" id="latitude" value="">
+                    </form>
+                    <a class="nav-link" href="#" onclick="sendForm()">Nearby</a>
+                  </li>
+                  <li class="nav-item  mx-2">
+                    <a class="nav-link" href="{% url 'map' %}">Map</a>
+                  </li>
+                  {% if request.user.is_authenticated %}
+                    <li class="nav-item  mx-2">
+                      <a class="nav-link" href="{% url 'my_services' %}">My services</a>
+                    </li>
+                    <li class="nav-item  mx-2">
+                      <a class="nav-link" href="{% url 'favorites_info' %}">Favorites</a>
+                    </li>
+                  {% endif %}
+                </ul>
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                  {% if request.user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ request.user.username }}
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{% url 'account_settings' %}">Settings</a></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                      </ul>
+                    </li>
+                  {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+          </nav>
+    </header>
+    <div class="alert alert-warning" id="coordinatesWarning" role="alert" hidden>
+      There have been some error fetching your coordinates, please refresh this page and try again.
+    </div>
+    <script>
+      function sendForm(){
+        var options = {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        };
+
+        function success(pos) {
+          var crd = pos.coords;
+          document.getElementById("latitude").value = crd.latitude;
+          document.getElementById("longitude").value = crd.longitude;
+
+          document.getElementById("coordinates").submit()
+        }
+
+        function error(err) {
+          document.getElementById("coordinatesWarning").removeAttribute("hidden")
+        }
+
+        navigator.geolocation.getCurrentPosition(success, error, options);
+      }
+    </script>
+    <div>
+        {% block body %}{% endblock %}
+    </div>
+
+    <script src="{% static 'service/script/popper.min.js' %}"></script>    
+    <script src="{% static 'service/script/bootstrap.min.js' %}"></script>
+</body>
+</html>
